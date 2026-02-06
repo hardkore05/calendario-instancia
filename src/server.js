@@ -10,7 +10,7 @@ const testRoutes = require("./routes/test.routes");
 const instanciasRoutes = require("./routes/instancias.routes");
 const actividadesRoutes = require("./routes/actividades.routes");
 const reportesRoutes = require("./routes/reportes.routes");
-const usersRoutes = require("./routes/users.routes"); // ✅ FALTABA
+const usersRoutes = require("./routes/users.routes");
 
 // Conectar MongoDB
 connectDB();
@@ -21,26 +21,23 @@ app.use(cors());
 app.use(express.json());
 
 // =======================
-// RUTAS API
+// RUTAS API (PRIMERO)
 // =======================
 app.use("/api/auth", authRoutes);
 app.use("/api/test", testRoutes);
 app.use("/api/instancias", instanciasRoutes);
 app.use("/api/actividades", actividadesRoutes);
 app.use("/api/reportes", reportesRoutes);
-app.use("/api/users", usersRoutes); // ✅ FALTABA
+app.use("/api/users", usersRoutes);
 
 // =======================
 // FRONTEND (React)
 // =======================
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-// Catch-all SPA
-app.use((req, res) => {
-  if (req.path.startsWith("/api")) {
-    return res.status(404).json({ message: "Ruta API no encontrada" });
-  }
-
+// Catch-all SOLO para frontend (SPA)
+// ⚠️ NO usar app.use aquí
+app.get("*", (req, res) => {
   res.sendFile(
     path.join(__dirname, "../frontend/dist/index.html")
   );
