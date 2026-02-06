@@ -34,7 +34,7 @@ app.use("/api/reportes", reportesRoutes);
 app.use("/api/users", usersRoutes);
 
 // =======================
-// FRONTEND (Vite build)
+// FRONTEND BUILD (Vite)
 // =======================
 const frontendPath = path.join(__dirname, "../frontend/dist");
 app.use(express.static(frontendPath));
