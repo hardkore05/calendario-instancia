@@ -21,7 +21,7 @@ app.use(cors());
 app.use(express.json());
 
 // =======================
-// RUTAS API (PRIMERO)
+// RUTAS API
 // =======================
 app.use("/api/auth", authRoutes);
 app.use("/api/test", testRoutes);
@@ -35,9 +35,8 @@ app.use("/api/users", usersRoutes);
 // =======================
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
-// Catch-all SOLO para frontend (SPA)
-// ⚠️ NO usar app.use aquí
-app.get("*", (req, res) => {
+// ✅ Catch-all CORRECTO para Express moderno
+app.get(/^(?!\/api).*/, (req, res) => {
   res.sendFile(
     path.join(__dirname, "../frontend/dist/index.html")
   );
