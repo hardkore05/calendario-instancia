@@ -24,7 +24,7 @@ app.use(cors());
 app.use(express.json());
 
 // =======================
-// RUTAS API (PRIMERO SIEMPRE)
+// RUTAS API (SIEMPRE PRIMERO)
 // =======================
 app.use("/api/auth", authRoutes);
 app.use("/api/test", testRoutes);
@@ -34,14 +34,14 @@ app.use("/api/reportes", reportesRoutes);
 app.use("/api/users", usersRoutes);
 
 // =======================
-// FRONTEND BUILD (Vite)
+// FRONTEND (Vite build)
 // =======================
 const frontendPath = path.join(__dirname, "../frontend/dist");
 app.use(express.static(frontendPath));
 
 // =======================
 // CATCH-ALL SPA (CORRECTO)
-// ❌ NO app.get("*")
+// ❌ NO "*"
 // ✅ Regex que excluye /api
 // =======================
 app.get(/^(?!\/api).*/, (req, res) => {
