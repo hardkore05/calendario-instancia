@@ -1,9 +1,11 @@
-const API_URL = "/api/auth";
+import API_URL from "../config/api";
 
 export async function login(email, password) {
-  const res = await fetch(`${API_URL}/login`, {
+  const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: JSON.stringify({ email, password })
   });
 
@@ -13,7 +15,6 @@ export async function login(email, password) {
     throw new Error(data.message || "Error al iniciar sesión");
   }
 
-  // 🔥 DEVOLVER TODO, NO SOLO EL TOKEN
   return data;
 }
 
