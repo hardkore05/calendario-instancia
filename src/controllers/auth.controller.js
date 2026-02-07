@@ -7,11 +7,16 @@ const jwt = require("jsonwebtoken");
 ====================== */
 exports.register = async (req, res) => {
   try {
-    const { nombre, email, password } = req.body;
+    let { nombre, email, password } = req.body;
 
     if (!nombre || !email || !password) {
       return res.status(400).json({ message: "Todos los campos son obligatorios" });
     }
+
+    // 🔧 NORMALIZAR EMAIL
+    email = email.trim().toLowerCase();
+
+    console.log("📝 REGISTRO EMAIL:", email);
 
     const existe = await User.findOne({ email });
     if (existe) {
@@ -19,7 +24,7 @@ exports.register = async (req, res) => {
     }
 
     const adminEmails = process.env.ADMIN_EMAILS
-      ? process.env.ADMIN_EMAILS.split(",")
+      ? process.env.ADMIN_EMAILS.split(",").map(e => e.trim().toLowerCase())
       : [];
 
     const role = adminEmails.includes(email) ? "admin" : "user";
@@ -44,6 +49,7 @@ exports.register = async (req, res) => {
     });
 
   } catch (error) {
+    console.error("🔥 ERROR REGISTRO 👉", error);
     res.status(500).json({ message: "Error del servidor" });
   }
 };
@@ -53,9 +59,18 @@ exports.register = async (req, res) => {
 ====================== */
 exports.login = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
+
+    // 🔧 NORMALIZAR EMAIL
+    email = email.trim().toLowerCase();
+
+    // 🔍 LOGS CLAVE
+    console.log("📩 EMAIL RECIBIDO LOGIN:", email);
 
     const user = await User.findOne({ email });
+
+    console.log("👤 USER ENCONTRADO LOGIN:", user);
+
     if (!user) {
       return res.status(404).json({ message: "Usuario no encontrado" });
     }
@@ -65,7 +80,7 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Contraseña incorrecta" });
     }
 
-    console.log("JWT_SECRET 👉", process.env.JWT_SECRET);
+    console.log("🔐 JWT_SECRET EXISTE:", !!process.env.JWT_SECRET);
 
     const token = jwt.sign(
       {
@@ -84,9 +99,9 @@ exports.login = async (req, res) => {
 
   } catch (error) {
     console.error("🔥 ERROR REAL LOGIN 👉", error);
-    res.status(500).json({ 
+    res.status(500).json({
       message: "Error en login",
-      error: error.message 
+      error: error.message
     });
   }
 };
