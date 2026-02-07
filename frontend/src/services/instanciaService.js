@@ -1,14 +1,14 @@
 import axios from "axios";
 
-const API = "https://28acddb0-4176-4c8d-a9c1-5f02469537c5-00-3uhts3cqimrk5.riker.replit.dev/api";
+const API = "/api/instancias";
 
 export const obtenerInstancias = async () => {
   const token = localStorage.getItem("token");
 
-  const res = await axios.get(`${API}/instancias`, {
+  const res = await axios.get(API, {
     headers: {
-      Authorization: `Bearer ${token}`
-    }
+      Authorization: `Bearer ${token}`,
+    },
   });
 
   return res.data;
