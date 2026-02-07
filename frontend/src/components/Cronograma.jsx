@@ -19,8 +19,8 @@ export default function Cronograma({
   const eventos = actividades.map((a) => ({
     id: a._id,
     title: a.instancia
-      ? `${a.titulo}\n${a.instancia.nombre}`
-      : a.titulo,
+      ? `${a.titulo}\n${a.instancia.nombre}\nCreado por: ${a.user?.nombre || ""}` // ✅ AGREGADO
+      : `${a.titulo}\nCreado por: ${a.user?.nombre || ""}`,                       // ✅ AGREGADO
     start: new Date(a.inicio),
     end: new Date(a.fin),
     backgroundColor:
@@ -29,7 +29,8 @@ export default function Cronograma({
       a.tipo === "no_disponible" ? "#6b7280" : "#1e40af",
     extendedProps: {
       instancia: a.instancia?.nombre || "",
-      tipo: a.tipo
+      tipo: a.tipo,
+      creadoPor: a.user?.nombre || "" // ✅ AGREGADO
     }
   }));
 
@@ -155,5 +156,3 @@ export default function Cronograma({
     </div>
   );
 }
-
-
