@@ -19,9 +19,8 @@ const reporteSemanalExcel = async (req, res) => {
     const inicio = new Date(from);
     const fin = new Date(to);
 
-    // 🔍 Buscar actividades reales
+    // 🔍 Buscar actividades + no disponible
     const actividades = await Actividad.find({
-      tipo: "actividad",
       inicio: { $lt: fin },
       fin: { $gt: inicio }
     })
@@ -54,18 +53,22 @@ const reporteSemanalExcel = async (req, res) => {
       sheet.addRow({
         usuario: nombreUsuario,
         email: act.user?.email || "",
-        instancia: act.instancia?.nombre || "Sin instancia",
-        titulo: act.titulo,
+        instancia: act.instancia?.nombre || "NO DISPONIBLE",
+        titulo: act.tipo === "no_disponible"
+          ? "No disponible"
+          : act.titulo,
         inicio: act.inicio,
         fin: act.fin,
         horas: horas.toFixed(2)
       });
 
-      // 📊 Resumen seguro
-      if (!resumen[nombreUsuario]) {
-        resumen[nombreUsuario] = 0;
+      // 📊 Resumen (NO sumar "No disponible")
+      if (act.tipo !== "no_disponible") {
+        if (!resumen[nombreUsuario]) {
+          resumen[nombreUsuario] = 0;
+        }
+        resumen[nombreUsuario] += horas;
       }
-      resumen[nombreUsuario] += horas;
     });
 
     // ➕ Hoja resumen
@@ -83,7 +86,7 @@ const reporteSemanalExcel = async (req, res) => {
       });
     });
 
-    // 📥 DESCARGA (forma correcta para Replit / HTTPS)
+    // 📥 DESCARGA
     const buffer = await workbook.xlsx.writeBuffer();
 
     res.setHeader(
