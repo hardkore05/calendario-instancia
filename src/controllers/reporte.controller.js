@@ -50,11 +50,13 @@ const reporteSemanalExcel = async (req, res) => {
 
       const nombreUsuario = act.user?.nombre || "Sin usuario";
 
+      const tipoNormalizado = String(act.tipo).toLowerCase();
+
       sheet.addRow({
         usuario: nombreUsuario,
         email: act.user?.email || "",
         instancia: act.instancia?.nombre || "NO DISPONIBLE",
-        titulo: act.tipo === "no_disponible"
+        titulo: tipoNormalizado === "no disponible"
           ? "No disponible"
           : act.titulo,
         inicio: act.inicio,
@@ -63,7 +65,7 @@ const reporteSemanalExcel = async (req, res) => {
       });
 
       // 📊 Resumen (NO sumar "No disponible")
-      if (act.tipo !== "no_disponible") {
+      if (tipoNormalizado !== "no disponible") {
         if (!resumen[nombreUsuario]) {
           resumen[nombreUsuario] = 0;
         }
